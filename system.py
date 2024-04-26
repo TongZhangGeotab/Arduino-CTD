@@ -7,7 +7,7 @@ from pymata4 import pymata4
 import dig_calls
 
 # DIG constants
-SEND_DIG = True
+SEND_DIG = False
 IGNITION_CODE = 10000
 ODOMETER_CODE = 5
 BRAKE_CODE = 1
@@ -23,7 +23,7 @@ X_PIN = 0
 Y_PIN = 1
 Z_PIN = 3
 
-BUTTON_HB_PIN = 4
+BUTTON_HB_PIN = 10
 BUTTON_HZ_PIN = 5
 LED_L_PIN = 6
 LED_R_PIN = 7
@@ -103,7 +103,7 @@ if SEND_DIG:
 
 # Sends dig calls
 def send_dig_call(value, code):
-    print(f"sending {value} for {code}")
+    # print(f"sending {value} for {code}")
     if SEND_DIG:
         try:
             res = dig_calls.send_GenericStatusRecord(
@@ -115,7 +115,7 @@ def send_dig_call(value, code):
             )
             assert res
         except AssertionError:
-            print("sending GeneritStatusRecord failed")
+            print("sending GenericStatusRecord failed")
 
 
 # Handles the ignition data
@@ -149,8 +149,8 @@ def joystick_handler(x, z):
     accel = (x - MAX_INT // 2) * 10 / (MAX_INT // 2)
     speed = max(state["speed"] - 10 if z else state["speed"] + accel * CYCLE_TIME, 0)
 
-    state["accel"] = int(accel)
-    state["speed"] = int(speed)
+    state["accel"] = accel
+    state["speed"] = speed
     state["x"] += int((state["speed"] + speed) // 2 * CYCLE_TIME)
 
     button_handler(z, "z")
